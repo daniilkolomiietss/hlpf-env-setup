@@ -43,9 +43,7 @@ let ProductsService = class ProductsService {
             description: data.description,
             price: data.price,
             stock: data.stock ?? 0,
-            category: data.categoryId
-                ? { id: data.categoryId }
-                : null,
+            category: data.categoryId ? { id: data.categoryId } : undefined,
         });
         return this.productRepo.save(product);
     }

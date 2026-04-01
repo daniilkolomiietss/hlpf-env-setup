@@ -30,22 +30,21 @@ export class ProductsService {
   }
  
   async create(data: {
-	name: string;
-	description?: string;
-	price: number;
-	stock?: number;
-	categoryId?: number;
+    name: string;
+    description?: string;
+    price: number;
+    stock?: number;
+    categoryId?: number;
   }): Promise<Product> {
-	const product = this.productRepo.create({
-  	name: data.name,
-  	description: data.description,
-  	price: data.price,
-  	stock: data.stock ?? 0,
-  	category: data.categoryId
-    	? { id: data.categoryId }
-    	: null,
-	} as any);
-	return this.productRepo.save(product);
+    const product = this.productRepo.create({
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      stock: data.stock ?? 0,
+      category: data.categoryId ? { id: data.categoryId } : undefined,
+    });
+    
+    return this.productRepo.save(product);
   }
  
   async update(
@@ -74,7 +73,7 @@ export class ProductsService {
   }
  
   async remove(id: number): Promise<void> {
-	const product = await this.findOne(id);
-	await this.productRepo.remove(product);
+    const product = await this.findOne(id);
+    await this.productRepo.remove(product);
   }
 }

@@ -12,12 +12,14 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const cache_manager_1 = require("@nestjs/cache-manager");
 const cache_manager_redis_yet_1 = require("cache-manager-redis-yet");
-const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
+const _1775084691507_AddIsActiveToProducts_1 = require("./migrations/1775084691507-AddIsActiveToProducts");
 const category_entity_1 = require("./categories/category.entity");
 const product_entity_1 = require("./products/product.entity");
+const categories_module_1 = require("./categories/categories.module");
+const products_module_1 = require("./products/products.module");
 const _1700000001000_CreateTables_1 = require("./migrations/1700000001000-CreateTables");
-const _1775084691507_AddIsActiveToProducts_1 = require("./migrations/1775084691507-AddIsActiveToProducts");
+const app_controller_1 = require("./app.controller");
+const app_service_1 = require("./app.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,20 +37,25 @@ exports.AppModule = AppModule = __decorate([
                 entities: [category_entity_1.Category, product_entity_1.Product],
                 synchronize: false,
                 migrationsRun: true,
-                migrations: [_1700000001000_CreateTables_1.CreateTables1700000001000, _1775084691507_AddIsActiveToProducts_1.AddIsActiveToProducts1775084691507],
+                migrations: [
+                    _1700000001000_CreateTables_1.CreateTables1700000001000,
+                    _1775084691507_AddIsActiveToProducts_1.AddIsActiveToProducts1775084691507,
+                ],
             }),
             cache_manager_1.CacheModule.registerAsync({
                 isGlobal: true,
                 useFactory: async () => ({
                     store: await (0, cache_manager_redis_yet_1.redisStore)({
                         socket: {
-                            host: process.env.REDIS_HOST,
+                            host: process.env.REDIS_HOST ?? 'localhost',
                             port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
                         },
                     }),
                     ttl: 60 * 1000,
                 }),
             }),
+            categories_module_1.CategoriesModule,
+            products_module_1.ProductsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
