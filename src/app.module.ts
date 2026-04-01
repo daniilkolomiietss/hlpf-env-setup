@@ -12,7 +12,7 @@ import { AppService } from './app.service';
 	TypeOrmModule.forRoot({
   	type: 'postgres',
   	host: process.env.POSTGRES_HOST,
-  	port: parseInt(process.env.POSTGRES_PORT, 10),
+  	port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
   	username: process.env.POSTGRES_USER,
   	password: process.env.POSTGRES_PASSWORD,
   	database: process.env.POSTGRES_DB,
@@ -25,7 +25,7 @@ import { AppService } from './app.service';
     	store: await redisStore({
       	socket: {
         	host: process.env.REDIS_HOST,
-        	port: parseInt(process.env.REDIS_PORT, 10),
+        	port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
       	},
     	}),
     	ttl: 60 * 1000, // 60 секунд у мілісекундах

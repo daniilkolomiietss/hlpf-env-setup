@@ -44,47 +44,51 @@ Hello World!
 └── README.md
 ```
  
+## Запуск проекту
+```bash
+cp .env.example .env   # налаштувати значення
+docker compose up --build
+```
+ 
 ## Перевірка сервісів
 ```text
-На четвертій вправі у файлі app.moduls помилки. Я намагався завантажити всі пакети, виправити код, та нічого не працює. Відповідно, нічого більше не запускається.
+NAME                        IMAGE                COMMAND                  SERVICE    CREATED         STATUS                   PORTS
+hlpf-env-setup-app-1        hlpf-env-setup-app   "docker-entrypoint.s…"   app        3 minutes ago   Up 2 minutes             0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+hlpf-env-setup-postgres-1   postgres:16-alpine   "docker-entrypoint.s…"   postgres   3 minutes ago   Up 2 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+hlpf-env-setup-redis-1      redis:7-alpine       "docker-entrypoint.s…"   redis      3 minutes ago   Up 2 minutes (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
 
-Starting compilation in watch mode...
-app-1       | 
-app-1       | src/app.module.ts:2:30 - error TS2307: Cannot find module '@nestjs/config' or its corresponding type declarations.
-app-1       | 
-app-1       | 2 import { ConfigModule } from '@nestjs/config';
-app-1       |                                ~~~~~~~~~~~~~~~~
-app-1       | 
-app-1       | src/app.module.ts:3:31 - error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
-app-1       | 
-app-1       | 3 import { TypeOrmModule } from '@nestjs/typeorm';
-app-1       |                                 ~~~~~~~~~~~~~~~~~
-app-1       | 
-app-1       | src/app.module.ts:4:29 - error TS2307: Cannot find module '@nestjs/cache-manager' or its corresponding type declarations.
-app-1       | 
-app-1       | 4 import { CacheModule } from '@nestjs/cache-manager';
-app-1       |                               ~~~~~~~~~~~~~~~~~~~~~~~
-app-1       | 
-app-1       | src/app.module.ts:5:28 - error TS2307: Cannot find module 'cache-manager-redis-yet' or its corresponding type declarations.
-app-1       | 
-app-1       | 5 import { redisStore } from 'cache-manager-redis-yet';
-app-1       |                              ~~~~~~~~~~~~~~~~~~~~~~~~~
-app-1       | 
-app-1       | src/app.module.ts:15:19 - error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
-app-1       |   Type 'undefined' is not assignable to type 'string'.
-app-1       | 
-app-1       | 15    port: parseInt(process.env.POSTGRES_PORT, 10),
-app-1       |                      ~~~~~~~~~~~~~~~~~~~~~~~~~
-app-1       | 
-app-1       | src/app.module.ts:28:25 - error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
-app-1       |   Type 'undefined' is not assignable to type 'string'.
-app-1       | 
-app-1       | 28          port: parseInt(process.env.REDIS_PORT, 10),
-app-1       |                            ~~~~~~~~~~~~~~~~~~~~~~
-app-1       | 
-app-1       | [11:54:05 AM] Found 6 errors. Watching for file changes.
-app-1       | 
+```
+ 
+## Перевірка PostgreSQL
+```text
+                                                     List of databases
+   Name    |  Owner   | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules |   Access privileges   
+-----------+----------+----------+-----------------+------------+------------+------------+-----------+-----------------------
+ nestdb    | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | 
+ postgres  | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | 
+ template0 | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/nestuser          +
+           |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
+ template1 | nestuser | UTF8     | libc            | en_US.utf8 | en_US.utf8 |            |           | =c/nestuser          +
+           |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
+(4 rows)
 
 
 ```
+ 
+## Перевірка Redis
+```text
+PONG
+```
+ 
+## Перевірка застосунку
+```text
+Hello World!
+```
+ 
+## Логи NestJS (фрагмент)
+```text
+app-1  | 
+app-1  | [1:43:48 PM] Found 0 errors. Watching for file changes.
+```
+
  
