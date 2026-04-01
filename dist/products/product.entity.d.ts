@@ -5,6 +5,7 @@ export declare class Product {
     description: string;
     price: number;
     stock: number;
+    isActive: boolean;
     category: Category;
     createdAt: Date;
     updatedAt: Date;

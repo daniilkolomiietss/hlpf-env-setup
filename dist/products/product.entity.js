@@ -18,6 +18,7 @@ let Product = class Product {
     description;
     price;
     stock;
+    isActive;
     category;
     createdAt;
     updatedAt;
@@ -43,6 +44,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'int', default: 0 }),
     __metadata("design:type", Number)
 ], Product.prototype, "stock", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'boolean', default: true }),
+    __metadata("design:type", Boolean)
+], Product.prototype, "isActive", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => category_entity_1.Category, { nullable: true, onDelete: 'SET NULL' }),
     (0, typeorm_1.JoinColumn)({ name: 'category_id' }),

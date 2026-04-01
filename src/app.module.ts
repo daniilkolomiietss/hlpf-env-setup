@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { Category } from './categories/category.entity';
 import { Product } from './products/product.entity';
 import { CreateTables1700000001000 } from './migrations/1700000001000-CreateTables';
+import { AddIsActiveToProducts1775084691507 } from './migrations/1775084691507-AddIsActiveToProducts';
  
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { CreateTables1700000001000 } from './migrations/1700000001000-CreateTabl
   entities: [Category, Product],
   synchronize: false,	// ВИМКНЕНО! Тільки міграції
   migrationsRun: true,   // автоматично запускати міграції при старті
-  migrations: [CreateTables1700000001000],
+  migrations: [CreateTables1700000001000, AddIsActiveToProducts1775084691507],
 }),
 
 	CacheModule.registerAsync({
