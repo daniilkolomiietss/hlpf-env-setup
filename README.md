@@ -13,5 +13,6 @@ Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
 <вивід docker compose run --rm npm npm -v>
-<вивід docker compose run --rm npm node --version>
+WARN[0000] Found orphan containers ([hlpf-env-setup-app-1 hlpf-env-setup-postgres-1 hlpf-env-setup-redis-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
+11.12.1
 
