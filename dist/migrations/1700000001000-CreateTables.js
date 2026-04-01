@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateTables1700000001 = void 0;
-class CreateTables1700000001 {
+exports.CreateTables1700000001000 = void 0;
+class CreateTables1700000001000 {
     async up(queryRunner) {
         await queryRunner.query(`
   	CREATE TABLE categories (
@@ -30,5 +30,5 @@ class CreateTables1700000001 {
         await queryRunner.query('DROP TABLE IF EXISTS categories');
     }
 }
-exports.CreateTables1700000001 = CreateTables1700000001;
-//# sourceMappingURL=1700000001-CreateTables.js.map
+exports.CreateTables1700000001000 = CreateTables1700000001000;
+//# sourceMappingURL=1700000001000-CreateTables.js.map

@@ -7,7 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Category } from './categories/category.entity';
 import { Product } from './products/product.entity';
-import { CreateTables1700000001 } from './migrations/1700000001-CreateTables';
+import { CreateTables1700000001000 } from './migrations/1700000001000-CreateTables';
  
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { CreateTables1700000001 } from './migrations/1700000001-CreateTables';
   entities: [Category, Product],
   synchronize: false,	// ВИМКНЕНО! Тільки міграції
   migrationsRun: true,   // автоматично запускати міграції при старті
-  migrations: [CreateTables1700000001],
+  migrations: [CreateTables1700000001000],
 }),
 
 	CacheModule.registerAsync({

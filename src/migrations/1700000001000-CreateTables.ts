@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
  
-export class CreateTables1700000001 implements MigrationInterface {
+export class CreateTables1700000001000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
 	// Спочатку categories — бо products посилається на неї
 	await queryRunner.query(`
