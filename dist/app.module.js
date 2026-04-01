@@ -14,6 +14,9 @@ const cache_manager_1 = require("@nestjs/cache-manager");
 const cache_manager_redis_yet_1 = require("cache-manager-redis-yet");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const category_entity_1 = require("./categories/category.entity");
+const product_entity_1 = require("./products/product.entity");
+const _1700000001_CreateTables_1 = require("./migrations/1700000001-CreateTables");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -28,8 +31,10 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [],
-                synchronize: true,
+                entities: [category_entity_1.Category, product_entity_1.Product],
+                synchronize: false,
+                migrationsRun: true,
+                migrations: [_1700000001_CreateTables_1.CreateTables1700000001],
             }),
             cache_manager_1.CacheModule.registerAsync({
                 isGlobal: true,

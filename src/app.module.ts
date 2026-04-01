@@ -5,20 +5,26 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Category } from './categories/category.entity';
+import { Product } from './products/product.entity';
+import { CreateTables1700000001 } from './migrations/1700000001-CreateTables';
  
 @Module({
   imports: [
 	ConfigModule.forRoot({ isGlobal: true }),
 	TypeOrmModule.forRoot({
-  	type: 'postgres',
-  	host: process.env.POSTGRES_HOST,
-  	port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
-  	username: process.env.POSTGRES_USER,
-  	password: process.env.POSTGRES_PASSWORD,
-  	database: process.env.POSTGRES_DB,
-  	entities: [],
-  	synchronize: true,
-	}),
+  type: 'postgres',
+  host: process.env.POSTGRES_HOST,
+  port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
+  entities: [Category, Product],
+  synchronize: false,	// ВИМКНЕНО! Тільки міграції
+  migrationsRun: true,   // автоматично запускати міграції при старті
+  migrations: [CreateTables1700000001],
+}),
+
 	CacheModule.registerAsync({
   	isGlobal: true,
   	useFactory: async () => ({
