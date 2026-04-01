@@ -16,3 +16,16 @@ This message shows that your installation appears to be working correctly.
 WARN[0000] Found orphan containers ([hlpf-env-setup-app-1 hlpf-env-setup-postgres-1 hlpf-env-setup-redis-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
 11.12.1
 
+
+Файл .env доданий до github в рамках навчання
+
+
+docker compose up postgres redis -d
+WARN[0000] Found orphan containers ([hlpf-env-setup-npm-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
+[+] Running 2/2
+ ✔ Container hlpf-env-setup-postgres-1  Running                            0.0s 
+ ✔ Container hlpf-env-setup-redis-1     Running                            0.0s 
+ 
+ 
+curl http://localhost:3000
+Hello World!
