@@ -1,0 +1,1 @@
+alias d-clean='docker compose down --remove-orphans && sudo fuser -k 3000/tcp 6379/tcp 5432/tcp'
