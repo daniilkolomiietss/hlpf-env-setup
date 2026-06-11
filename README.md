@@ -1,24 +1,17 @@
 ## Student
-- Name: Коломієць Данііл
+- Name: Данііл Коломієць
 - Group: 232/2 он
  
-## Практичне заняття №5 — JWT Authentication + Guards + RBAC
+## Практичне заняття №6 — Interceptors + Exception Filters + Swagger
  
 ### Структура репозиторію
 ```
 .
 ├── src/
-│   ├── auth/
-│   │   ├── dto/
-│   │   │   ├── register.dto.ts
-│   │   │   └── login.dto.ts
-│   │   ├── auth.module.ts
-│   │   ├── auth.service.ts
-│   │   └── auth.controller.ts
-│   ├── users/
-│   │   ├── user.entity.ts
-│   │   ├── users.module.ts
-│   │   └── users.service.ts
+│   ├── auth/ ...
+│   ├── users/ ...
+│   ├── categories/ ...
+│   ├── products/ ...
 │   ├── common/
 │   │   ├── enums/
 │   │   │   └── role.enum.ts
@@ -28,14 +21,17 @@
 │   │   ├── decorators/
 │   │   │   ├── current-user.decorator.ts
 │   │   │   └── roles.decorator.ts
+│   │   ├── interceptors/
+│   │   │   ├── logging.interceptor.ts
+│   │   │   └── transform.interceptor.ts
+│   │   ├── filters/
+│   │   │   └── http-exception.filter.ts
 │   │   └── pipes/
 │   │   	└── trim.pipe.ts
-│   ├── categories/ ...
-│   ├── products/ ...
 │   ├── migrations/
-│   ├── data-source.ts
 │   ├── main.ts
 │   └── app.module.ts
+├── swagger-screenshot.png
 ├── Dockerfile
 ├── docker-compose.yml
 └── README.md
@@ -47,86 +43,41 @@ cp .env.example .env
 docker compose up --build
 ```
  
-### API Endpoints
-| Method | URL | Auth | Role |
-|--------|-----|------|------|
-| POST | /auth/register | - | - |
-| POST | /auth/login | - | - |
-| GET | /api/categories | - | - |
-| POST | /api/categories | JWT | admin |
-| GET | /api/products | - | - |
-| POST | /api/products | JWT | admin |
-| PATCH | /api/products/:id | JWT | admin |
-| DELETE | /api/products/:id | JWT | admin |
+### Swagger UI
+http://localhost:3000/api/docs
  
-### Тест реєстрації
-```text
-HTTP/1.1 409 Conflict
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 85
-ETag: W/"55-B8U14sXoAMnNDFe1hqTpiUNB3EU"
-Date: Tue, 28 Apr 2026 09:33:10 GMT
-Connection: keep-alive
-Keep-Alive: timeout=5
-
-{"message":"User with this email already exists","error":"Conflict","statusCode"
+![Swagger](swagger-screenshot.png)
+ 
+### Формат успішної відповіді
+```json
+{
+  "data": { ... },
+  "statusCode": 200,
+  "timestamp": "2025-01-15T10:30:00.000Z"
+}
 ```
  
-### Тест логіну
-```text
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 210
-ETag: W/"d2-lZLMjorxdcZQ11fUHkFZybVqX4w"
-Date: Tue, 28 Apr 2026 09:33:49 GMT
-Connection: keep-alive
-Keep-Alive: timeout=5
-
-{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzczNjg4MjksImV4cCI6MTc3NzM3MjQyOX0.76hY8249TNYHaIIEVBqGLGP4u-nSxX2PiLuKpVU3oos"}
+### Формат помилки
+```json
+{
+  "error": {
+	"code": 400,
+	"message": "Validation failed",
+	"details": ["name must be longer..."],
+	"traceId": "a1b2c3..."
+  },
+  "timestamp": "2025-01-15T10:31:00.000Z"
+}
 ```
  
-### Тест 401 — запит без токена
+### Приклад логів (LoggingInterceptor)
 ```text
-HTTP/1.1 401 Unauthorized
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 81
-ETag: W/"51-iX0bTger5FpYClQdUjw9S3LEbtQ"
-Date: Tue, 28 Apr 2026 09:34:23 GMT
-Connection: keep-alive
-Keep-Alive: timeout=5
-
-{"message":"Missing authorization token","error":"Unauthorized","statusCode":401
+app-1  | [Nest] 29  - 06/11/2026, 9:46:38 AM     LOG [HTTP] POST /api/auth/register тАФ 201 тАФ 90ms
+app-1  | [Nest] 29  - 06/11/2026, 9:47:02 AM     LOG [HTTP] POST /api/auth/login тАФ 200 тАФ 62ms
+app-1  | [Nest] 29  - 06/11/2026, 10:05:57 AM     LOG [HTTP] GET /api/products тАФ 200 тАФ 10ms
 ```
  
-### Тест 403 — запит з роллю user
+### Тест помилки з traceId
 ```text
-HTTP/1.1 401 Unauthorized
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 78
-ETag: W/"4e-bCtcmgfHD0YzzyKTlGcLAj+Xg4w"
-Date: Tue, 28 Apr 2026 09:34:52 GMT
-Connection: keep-alive
-Keep-Alive: timeout=5
-
-{"message":"Invalid or expired token","error":"Unauthorized","statusCode":401}
+{"error":{"code":404,"message":"Product #999 not found","traceId":"573b56a2-872f-486e-90f6-f5b3284c7ee7"},"timestamp":"2026-06-11T10:05:03.054Z"}
 ```
- 
-### Тест успішного створення від admin
-```text
-HTTP/1.1 201 Created
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 169
-ETag: W/"a9-RuhMEb9Lu6pk2R+h+FjziN7yyWg"
-Date: Tue, 28 Apr 2026 09:38:18 GMT
-Connection: keep-alive
-Keep-Alive: timeout=5
-
-{"id":5,"name":"MacBook Pro","description":null,"price":2499.99,"stock":10,"isActive":true,"createdAt":"2026-04-28T09:38:18.025Z","updatedAt":"2026-04-28T09:38:18.025Z"}
-```
-
- 
