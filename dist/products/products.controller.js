@@ -23,13 +23,15 @@ const jwt_auth_guard_1 = require("../common/guards/jwt-auth.guard");
 const roles_guard_1 = require("../common/guards/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const role_enum_1 = require("../common/enums/role.enum");
+const common_2 = require("@nestjs/common");
+const product_query_dto_1 = require("./dto/product-query.dto");
 let ProductsController = class ProductsController {
     productsService;
     constructor(productsService) {
         this.productsService = productsService;
     }
-    findAll() {
-        return this.productsService.findAll();
+    findAll(query) {
+        return this.productsService.findAll(query);
     }
     findOne(id) {
         return this.productsService.findOne(id);
@@ -48,12 +50,15 @@ exports.ProductsController = ProductsController;
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({
-        summary: 'Отримати всі продукти',
-        description: 'Повертає список усіх продуктів з вкладеними категоріями. Публічний ендпоінт.',
+        summary: 'Отримати продукти з пагінацією',
+        description: 'Повертає список продуктів з мета-інформацією. ' +
+            'Підтримує пагінацію, сортування, фільтрацію ' +
+            'та пошук.',
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Список продуктів' }),
+    openapi.ApiResponse({ status: 200 }),
+    __param(0, (0, common_2.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [product_query_dto_1.ProductQueryDto]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
 __decorate([
