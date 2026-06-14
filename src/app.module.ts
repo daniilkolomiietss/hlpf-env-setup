@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
-//import { AddIsActiveToProducts1775084691507 } from './migrations/1775084691507-AddIsActiveToProducts';
 import { CreateUsers1777288268548 } from './migrations/1777288268548-CreateUsers';
+import { CreateOrders1781364049990 } from './migrations/1781364049990-CreateOrders';
 import { Category } from './categories/category.entity';
 import { Product } from './products/product.entity';
 import { CategoriesModule } from './categories/categories.module';
@@ -12,14 +12,11 @@ import { ProductsModule } from './products/products.module';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
- 
-//import { CreateTables1700000001000 }
-// from './migrations/1700000001000-CreateTables';
-// import { AddIsActiveToProducts... }
-//   from './migrations/...-AddIsActiveToProducts';
- 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Order } from './orders/entities/order.entity';
+import { OrderItem } from './orders/entities/order-item.entity';
+import { OrdersModule } from './orders/orders.module';
  
 @Module({
   imports: [
@@ -32,19 +29,17 @@ import { AppService } from './app.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [Category, Product, User],
+      entities: [Category, Product, User, Order, OrderItem],
       synchronize: false,
       migrationsRun: true,
       migrations: [
-        //CreateTables1700000001000,
-        //AddIsActiveToProducts1775084691507,
         CreateUsers1777288268548,
+        CreateOrders1781364049990,
       ],
     }),
  
     UsersModule,
     AuthModule,
- 
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: async () => ({
@@ -57,9 +52,9 @@ import { AppService } from './app.service';
         ttl: 60 * 1000,
       }),
     }),
- 
     CategoriesModule,
     ProductsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

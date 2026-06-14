@@ -2,49 +2,186 @@
 - Name: Коломієць Данііл
 - Group: 232/2
  
-## Практичне заняття №7 — Redis + Pagination + Filtering
+## MiniShop API — Фінальний проєкт
  
-### Запуск проекту
+REST API інтернет-магазину на NestJS + PostgreSQL + Redis.
+ 
+### Технології
+- NestJS + TypeScript
+- PostgreSQL + TypeORM (міграції, QueryBuilder)
+- Redis (кешування з інвалідацією)
+- JWT автентифікація + RBAC авторизація
+- class-validator + class-transformer
+- Swagger / OpenAPI
+ 
+### Запуск
 ```bash
 cp .env.example .env
 docker compose up --build
 docker compose run --rm app npm run seed
 ```
  
-### API: GET /api/products
+### Swagger UI
+http://localhost:3000/api/docs
  
-| Параметр | Тип | Default | Опис |
-|----------|-----|---------|------|
-| page | number | 1 | Номер сторінки |
-| pageSize | number | 10 | Елементів на сторінку (max 100) |
-| sort | string | createdAt | Поле сортування |
-| order | asc/desc | desc | Напрямок |
-| categoryId | number | - | Фільтр за категорією |
-| minPrice | number | - | Мінімальна ціна |
-| maxPrice | number | - | Максимальна ціна |
-| search | string | - | Пошук за назвою (ILIKE) |
+### API Endpoints
  
-### Тест пагінації
+#### Auth
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| POST | /auth/register | - | Реєстрація |
+| POST | /auth/login | - | Логін → JWT |
+ 
+#### Categories
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| GET | /api/categories | - | Список |
+| GET | /api/categories/:id | - | Одна |
+| POST | /api/categories | admin | Створити |
+| PATCH | /api/categories/:id | admin | Оновити |
+| DELETE | /api/categories/:id | admin | Видалити |
+ 
+#### Products
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| GET | /api/products | - | Список + pagination + filter |
+| GET | /api/products/:id | - | Один |
+| POST | /api/products | admin | Створити |
+| PATCH | /api/products/:id | admin | Оновити |
+| DELETE | /api/products/:id | admin | Видалити |
+ 
+#### Orders
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| POST | /api/orders | user | Створити замовлення |
+| GET | /api/orders | user | Мої / Всі (admin) |
+| GET | /api/orders/:id | user | Одне (ownership) |
+| PATCH | /api/orders/:id/status | admin | Змінити статус |
+| DELETE | /api/orders/:id | admin | Видалити |
+ 
+### Тест створення замовлення
 ```text
-{"data":{"items":[{"id":30,"name":"Hoodie NestJS v3","description":null,"price":"75.00","stock":75,"isActive":true,"category":{"id":3,"name":"Clothing","description":null,"createdAt":"2026-06-12T09:45:59.157Z"},"createdAt":"2026-06-12T09:52:13.377Z","updatedAt":"2026-06-12T09:52:13.377Z"},{"id":29,"name":"T-Shirt Dev v3","description":null,"price":"45.00","stock":200,"isActive":true,"category":{"id":3,"name":"Clothing","description":null,"createdAt":"2026-06-12T09:45:59.157Z"},"createdAt":"2026-06-12T09:52:13.374Z","updatedAt":"2026-06-12T09:52:13.374Z"},{"id":28,"name":"Laptop Sleeve v3","description":null,"price":"69.00","stock":60,"isActive":true,"category":{"id":2,"name":"Accessories","description":null,"createdAt":"2026-06-12T09:45:59.156Z"},"createdAt":"2026-06-12T09:52:13.371Z","updatedAt":"2026-06-12T09:52:13.371Z"},{"id":27,"name":"MagSafe Charger v3","description":null,"price":"59.00","stock":80,"isActive":true,"category":{"id":2,"name":"Accessories","description":null,"createdAt":"2026-06-12T09:45:59.156Z"},"createdAt":"2026-06-12T09:52:13.369Z","updatedAt":"2026-06-12T09:52:13.369Z"},{"id":26,"name":"USB-C Cable v3","description":null,"price":"39.00","stock":500,"isActive":true,"category":{"id":2,"name":"Accessories","description":null,"createdAt":"2026-06-12T09:45:59.156Z"},"createdAt":"2026-06-12T09:52:13.365Z","updatedAt":"2026-06-12T09:52:13.365Z"}],"meta":{"page":1,"pageSize":5,"total":30,"totalPages":6}},"statusCode":200,"timestamp":"2026-06-12T10:08:31.051Z"}
+code 201
+
+{
+  "data": {
+    "id": 21,
+    "status": "pending",
+    "totalPrice": "2247.00",
+    "user": {
+      "id": 5
+    },
+    "items": [
+      {
+        "id": 41,
+        "quantity": 2,
+        "price": "999.00",
+        "product": {
+          "id": 1,
+          "name": "iPhone 16",
+          "description": null,
+          "price": "999.00",
+          "stock": 38,
+          "isActive": true,
+          "createdAt": "2026-06-12T09:52:13.264Z",
+          "updatedAt": "2026-06-14T12:06:38.189Z"
+        }
+      },
+      {
+        "id": 42,
+        "quantity": 1,
+        "price": "249.00",
+        "product": {
+          "id": 5,
+          "name": "AirPods Pro",
+          "description": null,
+          "price": "249.00",
+          "stock": 92,
+          "isActive": true,
+          "createdAt": "2026-06-12T09:52:13.302Z",
+          "updatedAt": "2026-06-14T12:06:38.189Z"
+        }
+      }
+    ],
+    "createdAt": "2026-06-14T12:06:38.189Z"
+  },
+  "statusCode": 201,
+  "timestamp": "2026-06-14T12:06:38.221Z"
+}
 ```
  
-### Тест фільтрації
+### Тест ownership (403)
 ```text
-{"data":{"items":[{"id":24,"name":"iPad Air v3","description":null,"price":"619.00","stock":30,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.360Z","updatedAt":"2026-06-12T09:52:13.360Z"},{"id":23,"name":"MacBook Pro v3","description":null,"price":"2519.00","stock":15,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.358Z","updatedAt":"2026-06-12T09:52:13.358Z"},{"id":22,"name":"Galaxy S24 v3","description":null,"price":"869.00","stock":40,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.354Z","updatedAt":"2026-06-12T09:52:13.354Z"},{"id":21,"name":"iPhone 16 v3","description":null,"price":"1019.00","stock":50,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.352Z","updatedAt":"2026-06-12T09:52:13.352Z"},{"id":14,"name":"iPad Air v2","description":null,"price":"609.00","stock":30,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.331Z","updatedAt":"2026-06-12T09:52:13.331Z"},{"id":13,"name":"MacBook Pro v2","description":null,"price":"2509.00","stock":15,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.328Z","updatedAt":"2026-06-12T09:52:13.328Z"},{"id":12,"name":"Galaxy S24 v2","description":null,"price":"859.00","stock":40,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.324Z","updatedAt":"2026-06-12T09:52:13.324Z"},{"id":11,"name":"iPhone 16 v2","description":null,"price":"1009.00","stock":50,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.322Z","updatedAt":"2026-06-12T09:52:13.322Z"},{"id":4,"name":"iPad Air","description":null,"price":"599.00","stock":30,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.298Z","updatedAt":"2026-06-12T09:52:13.298Z"},{"id":3,"name":"MacBook Pro","description":null,"price":"2499.00","stock":15,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.295Z","updatedAt":"2026-06-12T09:52:13.295Z"}],"meta":{"page":1,"pageSize":10,"total":12,"totalPages":2}},"statusCode":200,"timestamp":"2026-06-12T10:08:57.181Z"}
+Code 403
+
+{
+  "error": {
+    "code": 403,
+    "message": "У вас немає доступу до цього замовлення",
+    "traceId": "ba2ade8c-bed5-4d0e-9c9c-3c1d72367cb3"
+  },
+  "timestamp": "2026-06-14T12:10:21.972Z"
+}
 ```
  
-### Тест пошуку
+### Тест зміни статусу
 ```text
-{"data":{"items":[{"id":23,"name":"MacBook Pro v3","description":null,"price":"2519.00","stock":15,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.358Z","updatedAt":"2026-06-12T09:52:13.358Z"},{"id":13,"name":"MacBook Pro v2","description":null,"price":"2509.00","stock":15,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.328Z","updatedAt":"2026-06-12T09:52:13.328Z"},{"id":3,"name":"MacBook Pro","description":null,"price":"2499.00","stock":15,"isActive":true,"category":{"id":1,"name":"Electronics","description":null,"createdAt":"2026-06-12T09:45:59.152Z"},"createdAt":"2026-06-12T09:52:13.295Z","updatedAt":"2026-06-12T09:52:13.295Z"}],"meta":{"page":1,"pageSize":10,"total":3,"totalPages":1}},"statusCode":200,"timestamp":"2026-06-12T10:09:14.366Z"}
+code 200
+
+{
+  "data": {
+    "id": 21,
+    "status": "delivered",
+    "totalPrice": "2247.00",
+    "items": [
+      {
+        "id": 41,
+        "quantity": 2,
+        "price": "999.00",
+        "product": {
+          "id": 1,
+          "name": "iPhone 16",
+          "description": null,
+          "price": "999.00",
+          "stock": 38,
+          "isActive": true,
+          "createdAt": "2026-06-12T09:52:13.264Z",
+          "updatedAt": "2026-06-14T12:06:38.189Z"
+        }
+      },
+      {
+        "id": 42,
+        "quantity": 1,
+        "price": "249.00",
+        "product": {
+          "id": 5,
+          "name": "AirPods Pro",
+          "description": null,
+          "price": "249.00",
+          "stock": 92,
+          "isActive": true,
+          "createdAt": "2026-06-12T09:52:13.302Z",
+          "updatedAt": "2026-06-14T12:06:38.189Z"
+        }
+      }
+    ],
+    "createdAt": "2026-06-14T12:06:38.189Z"
+  },
+  "statusCode": 200,
+  "timestamp": "2026-06-14T12:12:30.708Z"
+}
 ```
  
-### Тест кешування (Redis)
+### Тест insufficient stock
 ```text
-(empty array)
-```
- 
-### Тест інвалідації кешу
-```text
-<Redis KEYS до та після POST /api/products>
+Code 400
+
+{
+  "error": {
+    "code": 400,
+    "message": "Недостатньо товару \"AirPods Pro\" на складі. Доступно: 92, запитано: 999999999",
+    "traceId": "ada952e4-2f03-4625-a8bf-38e6ca6a0366"
+  },
+  "timestamp": "2026-06-14T12:13:09.250Z"
+}
 ```

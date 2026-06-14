@@ -13,6 +13,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const cache_manager_1 = require("@nestjs/cache-manager");
 const cache_manager_redis_yet_1 = require("cache-manager-redis-yet");
 const _1777288268548_CreateUsers_1 = require("./migrations/1777288268548-CreateUsers");
+const _1781364049990_CreateOrders_1 = require("./migrations/1781364049990-CreateOrders");
 const category_entity_1 = require("./categories/category.entity");
 const product_entity_1 = require("./products/product.entity");
 const categories_module_1 = require("./categories/categories.module");
@@ -22,6 +23,9 @@ const users_module_1 = require("./users/users.module");
 const auth_module_1 = require("./auth/auth.module");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const order_entity_1 = require("./orders/entities/order.entity");
+const order_item_entity_1 = require("./orders/entities/order-item.entity");
+const orders_module_1 = require("./orders/orders.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,11 +40,12 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [category_entity_1.Category, product_entity_1.Product, user_entity_1.User],
+                entities: [category_entity_1.Category, product_entity_1.Product, user_entity_1.User, order_entity_1.Order, order_item_entity_1.OrderItem],
                 synchronize: false,
                 migrationsRun: true,
                 migrations: [
                     _1777288268548_CreateUsers_1.CreateUsers1777288268548,
+                    _1781364049990_CreateOrders_1.CreateOrders1781364049990,
                 ],
             }),
             users_module_1.UsersModule,
@@ -59,6 +64,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             categories_module_1.CategoriesModule,
             products_module_1.ProductsModule,
+            orders_module_1.OrdersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
